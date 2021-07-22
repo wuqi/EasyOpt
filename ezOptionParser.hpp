@@ -47,6 +47,7 @@ namespace ez
   enum EZ_TYPE { EZ_NOTYPE = 0, EZ_BOOL, EZ_INT8, EZ_UINT8, EZ_INT16, EZ_UINT16, EZ_INT32, EZ_UINT32, EZ_INT64, EZ_UINT64, EZ_FLOAT, EZ_DOUBLE, EZ_TEXT, EZ_FILE, EZ_DIR, EZ_OUTPUT };
   static const std::string EZ_TYPE_NAME[] = {"NOTYPE", "bool", "char", "unsigned char", "short", "unsigned short", "int", "unsigned int", "long", "unsigned long", "float", "double", "string", "file", "directory", "output"};
   static const char delim = ',';
+
   /**
   * @brief 拆分字符串
   * @param s 输入字串
@@ -99,7 +100,6 @@ namespace ez
       optType( EZ_NOTYPE ), \
       isUnlabeled( false ), \
       groupID( 0 ) { }
-    ~OptionGroup() {};
     std::string defaults;  /** @brief 默认值  */
     int expectArgs;  /** @brief 期望参数个数  */
     std::string help;  /** @brief 参数说明  */
@@ -119,7 +119,234 @@ namespace ez
     size_t validIndex = 0; /**被选中的valid value*/
     double minValid;
     double maxValid;
-    std::vector<double> scalaValues;
+    void *scalaValues = NULL;
+    ~OptionGroup()
+    {
+      if (scalaValues) {
+        switch (optType) {
+        case ez::EZ_BOOL: {
+          bool *values = (bool *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_INT8: {
+          char *values = (char *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_UINT8: {
+          unsigned char *values = (unsigned char *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_INT16: {
+          short *values = (short *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_UINT16: {
+          unsigned short *values = (unsigned short *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_INT32: {
+          int *values = (int *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_UINT32: {
+          unsigned int *values = (unsigned int *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_INT64: {
+          long *values = (long *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_UINT64: {
+          unsigned long *values = (unsigned long *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_FLOAT: {
+          float *values = (float *)scalaValues;
+          delete values;
+        }
+        break;
+        case ez::EZ_DOUBLE: {
+          double *values = (double *)scalaValues;
+          delete values;
+        }
+        break;
+        default:
+          break;
+        }
+        scalaValues = NULL;
+      };
+    }
+    /**
+    * @brief 获取默认参数
+    * @param i index
+    * @param out 输出参数值
+    */
+    inline void getScalaValue(int i, std::string &out)
+    {
+      if (i >= expectArgs)
+        return;
+      std::stringstream ss;
+      switch (optType) {
+      case ez::EZ_BOOL: {
+        bool *values = (bool *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_INT8: {
+        char *values = (char *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_UINT8: {
+        unsigned char *values = (unsigned char *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_INT16: {
+        short *values = (short *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_UINT16: {
+        unsigned short *values = (unsigned short *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_INT32: {
+        int *values = (int *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_UINT32: {
+        unsigned int *values = (unsigned int *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_INT64: {
+        long *values = (long *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_UINT64: {
+        unsigned long *values = (unsigned long *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_FLOAT: {
+        float *values = (float *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      case ez::EZ_DOUBLE: {
+        double *values = (double *)scalaValues;
+        ss << values[i];
+        ss >> out;
+      }
+      break;
+      default:
+        break;
+      }
+    }
+    /**
+    * @brief 获取默认参数
+    * @param i index
+    * @param out 输入参数值
+    */
+    inline void setScalaValue(int i, std::string in)
+    {
+      if (i >= expectArgs)
+        return;
+      std::stringstream ss;
+      switch (optType) {
+      case ez::EZ_BOOL: {
+        bool *values = (bool *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_INT8: {
+        char *values = (char *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_UINT8: {
+        unsigned char *values = (unsigned char *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_INT16: {
+        short *values = (short *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_UINT16: {
+        unsigned short *values = (unsigned short *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_INT32: {
+        int *values = (int *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_UINT32: {
+        unsigned int *values = (unsigned int *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_INT64: {
+        long *values = (long *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_UINT64: {
+        unsigned long *values = (unsigned long *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_FLOAT: {
+        float *values = (float *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      case ez::EZ_DOUBLE: {
+        double *values = (double *)scalaValues;
+        ss << in;
+        ss >> values[i];
+      }
+      break;
+      default:
+        break;
+      }
+    }
     /**
     * @brief 获取参数
     * @param out 输出参数值
@@ -349,7 +576,7 @@ namespace ez
         ss.str("");
         ss.clear();
       } else {
-        mint = (std::numeric_limits<T>::min)();
+        mint = (std::numeric_limits<T>::lowest )();
       }
       if (!maxValue.empty()) {
         ss << maxValue;
@@ -372,7 +599,6 @@ namespace ez
       return true;
     };
   protected:
-
     /**
     * @brief 验证参数是否正确,仅内部调用
     * @param example 数据类型示例，用于判断类型最大最小值
@@ -426,7 +652,13 @@ namespace ez
       /* 添加help参数*/
       add( "-h,--help,--usage", false, 0, "Print this usage message" );
     };
-    inline ~OptionParser() {};
+    inline ~OptionParser()
+    {
+      for (auto it = groups.begin(); it != groups.end(); ++it) {
+        delete (*it);
+      }
+      this->groups.clear();
+    };
     /**
     * @brief 添加参数
     * @param flags 参数标识,可有多个,get时使用,用逗号分隔
@@ -456,89 +688,123 @@ namespace ez
                              const  char *validListStr = "")
     {
       int id = this->groups.size();
-      OptionGroup g;
-      g.defaults = defaults;
+      OptionGroup *g = new OptionGroup;
+      g->defaults = defaults;
       std::stringstream ss;
       std::vector<std::string> defaultList;
       SplitDelim(defaults, ',', defaultList);
-      if(expectArgs > 0)
-        g.scalaValues.resize(expectArgs);
-      for (size_t i = 0; i < defaultList.size(); ++i) {
-        double value;
-        ss << defaultList[i];
-        ss >> value;
-        g.scalaValues.push_back(value);
-        ss.str("");
-        ss.clear();
-        ss.str("");
+      g->isRequired = required;
+      g->expectArgs = expectArgs;
+      g->isSet = 0;
+      g->needSplit = expectArgs <= 1 ? false : true;
+      g->help.append( help );
+      if (optType != EZ_NOTYPE) {
+        g->help.append("[").append(EZ_TYPE_NAME[optType]).append("]");
       }
-      if (defaultList.size() < expectArgs) {
-        for (size_t i = defaultList.size(); i < expectArgs; ++i) {
-          g.scalaValues[i] = 0;
-        }
-      }
-      g.isRequired = required;
-      g.expectArgs = expectArgs;
-      g.isSet = 0;
-      g.needSplit = expectArgs <= 1 ? false : true;
-
-      g.help.append( help );
-	  if (optType != EZ_NOTYPE) {
-		  g.help.append("[").append(EZ_TYPE_NAME[optType]).append("]");
-	  }
       std::vector<std::string> flagsVector;
       SplitDelim( flags, delim, flagsVector );
-      g.flags = flagsVector;
-      g.optType = optType;
-      g.minValue = minValue;
-      g.maxValue = maxValue;
+      g->flags = flagsVector;
+      g->optType = optType;
+      g->minValue = minValue;
+      g->maxValue = maxValue;
       std::vector<std::string> validList;
       SplitDelim( validListStr, delim, validList );
-      g.validValues = validList;
+      g->validValues = validList;
       if( optType == EZ_TEXT && optType == EZ_OUTPUT && validList.size() > 0 ) {
-        g.needValidate = true;
+        g->needValidate = true;
       } else if( optType != EZ_TEXT && optType != EZ_OUTPUT && optType != EZ_NOTYPE ) {
-        g.needValidate = true;
+        g->needValidate = true;
       }
       if( flagsVector[0].substr( 0, 1 ) != "-" ) {
         /*reset some properties*/
-        g.isUnlabeled = true;
-        g.isRequired = true;/*option must be set if defined as unlabeled*/
+        g->isUnlabeled = true;
+        g->isRequired = true;/*option must be set if defined as unlabeled*/
         unlabeledPos.insert( std::pair<int, std::string> ( unlabeledNumber, flagsVector[0] ) );
         unlabeledNumber++;
-        g.argsFormat.append( "(" );
+        g->argsFormat.append( "(" );
       }
-      if( g.expectArgs == 0 ) {
-        g.argsFormat.append( " " );
-      } else if( g.expectArgs == -1 ) {
-        g.argsFormat.append( " Arg0,[ArgN] " );
-      } else if( g.expectArgs == 1 ) {
-        if( g.validValues.size() == 0 ) {
-          g.argsFormat.append( " Arg " );
+      if( g->expectArgs == 0 ) {
+        g->argsFormat.append( " " );
+      } else if( g->expectArgs == -1 ) {
+        g->argsFormat.append( " Arg0,[ArgN] " );
+      } else if( g->expectArgs == 1 ) {
+        if( g->validValues.size() == 0 ) {
+          g->argsFormat.append( " Arg " );
         } else {
-          g.argsFormat.append( " " );
-          for( int k = 0; k < ( int )g.validValues.size(); ++k ) {
-            g.argsFormat.append( g.validValues[k] ).append( "|" );
+          g->argsFormat.append( " " );
+          for( int k = 0; k < ( int )g->validValues.size(); ++k ) {
+            g->argsFormat.append( g->validValues[k] ).append( "|" );
           }
         }
       } else {
-        g.argsFormat.append( " " );
-        for( int i = 0; i < g.expectArgs; i++ ) {
+        g->argsFormat.append( " " );
+        for( int i = 0; i < g->expectArgs; i++ ) {
           std::string argstr;
           ss << i;
           ss >> argstr;
           ss.str( "" );
           ss.clear();
           ss.str("");
-          g.argsFormat.append( "Arg" ).append( argstr ).append( "," );
+          g->argsFormat.append( "Arg" ).append( argstr ).append( "," );
         }
       }
-      g.argsFormat.erase( g.argsFormat.size() - 1 );
-      if( g.isUnlabeled ) {
-        g.argsFormat.append( " )" );
+      g->argsFormat.erase( g->argsFormat.size() - 1 );
+      if( g->isUnlabeled ) {
+        g->argsFormat.append( " )" );
       }
       for( int i = 0; i < ( int )flagsVector.size(); ++i ) {
         this->optionGroupIds[flagsVector[i]] = id;
+      }
+      if (expectArgs > 0) {
+        do {
+          switch (optType) {
+          case ez::EZ_BOOL:
+            g->scalaValues = new bool[expectArgs];
+            break;
+          case ez::EZ_INT8:
+            g->scalaValues = new char[expectArgs];
+            break;
+          case ez::EZ_UINT8:
+            g->scalaValues = new unsigned char[expectArgs];
+            break;
+          case ez::EZ_INT16:
+            g->scalaValues = new short[expectArgs];
+            break;
+          case ez::EZ_UINT16:
+            g->scalaValues = new unsigned short[expectArgs];
+            break;
+          case ez::EZ_INT32:
+            g->scalaValues = new int[expectArgs];
+            break;
+          case ez::EZ_UINT32:
+            g->scalaValues = new unsigned int[expectArgs];
+            break;
+          case ez::EZ_INT64:
+            g->scalaValues = new long[expectArgs];
+            break;
+          case ez::EZ_UINT64:
+            g->scalaValues = new unsigned long[expectArgs];
+            break;
+          case ez::EZ_FLOAT:
+            g->scalaValues = new float[expectArgs];
+            break;
+          case ez::EZ_DOUBLE:
+            g->scalaValues = new double[expectArgs];
+            break;
+          default:
+            break;
+          }
+          if (!g->scalaValues)
+            break;
+          for (size_t i = 0; i < expectArgs; ++i) {
+            if (i >= defaultList.size()) {
+              g->setScalaValue(i, "0");
+              continue;
+            }
+            double value;
+            g->setScalaValue(i, defaultList[i]);
+          }
+        } while (0);
       }
       this->groups.push_back( g );
     };
@@ -554,7 +820,7 @@ namespace ez
       for( unsigned int i = 0; i < list.size(); i++ ) {
         if( optionGroupIds.count( list[i] ) ) {
           int Id = optionGroupIds[list[i]];
-          groups[Id].groupID = xorGroupNum;
+          groups[Id]->groupID = xorGroupNum;
           xorGroups[xorGroupNum].push_back( Id );
         }
       }
@@ -564,12 +830,12 @@ namespace ez
     * @param name 参数标识名
     * @return 参数
     */
-    inline OptionGroup get( const char *name )
+    inline OptionGroup *get( const char *name )
     {
       if( optionGroupIds.count( name ) ) {
         return groups[optionGroupIds[name]];
       }
-      return OptionGroup();
+      return new OptionGroup();
     };
     /**
     * @brief 获取使用说明
@@ -590,25 +856,25 @@ namespace ez
           xorGroupUsage.push_back( "" );
         }
         for( i = 0; i < ( int )groups.size(); i++ ) {
-          OptionGroup g = groups[i];
+          OptionGroup *g = groups[i];
           std::string opt = "";
-          if( g.groupID == 0 ) {
+          if( g->groupID == 0 ) {
             /*no xor*/
-            if( !g.isRequired ) {
+            if( !g->isRequired ) {
               opt = "[";
             }
-            opt.append( g.flags[0] ).append( g.argsFormat );
-            if( !g.isRequired ) {
+            opt.append( g->flags[0] ).append( g->argsFormat );
+            if( !g->isRequired ) {
               opt.append( "]" );
             }
             opt.append( " " );
           } else {
-            int groupID = g.groupID;
+            int groupID = g->groupID;
             if( xorGroupUsage[groupID - 1].empty() ) {
               xorGroupUsage[groupID - 1].append( " [" );
             }
-            xorGroupUsage[groupID - 1].append( g.flags[0] )\
-            .append( g.argsFormat )\
+            xorGroupUsage[groupID - 1].append( g->flags[0] )\
+            .append( g->argsFormat )\
             .append( " | " );
           }
           syntax.append( opt );
@@ -621,17 +887,17 @@ namespace ez
       }
       usage.append( syntax ).append( "\n\nOPTIONS:\n\n" );
       for( i = 0; i < ( int )groups.size(); i++ ) {
-        OptionGroup g = groups[i];
+        OptionGroup *g = groups[i];
         usage.append( "    " );
         std::string flags;
-        for( j = 0; j < ( int )g.flags.size(); ++j ) {
-          flags.append( g.flags[j] ).append( " " );
+        for( j = 0; j < ( int )g->flags.size(); ++j ) {
+          flags.append( g->flags[j] ).append( " " );
         }
         usage.append( flags )\
-        .append( g.argsFormat )\
+        .append( g->argsFormat )\
         .append( ":\n" )\
         .append( "        " )\
-        .append( g.help )\
+        .append( g->help )\
         .append( "\n" );
       }
       if( !example.empty() ) {
@@ -651,7 +917,7 @@ namespace ez
     {
       std::string sname( name );
       if( this->optionGroupIds.count( sname ) ) {
-        return this->groups[this->optionGroupIds[sname]].isSet;
+        return this->groups[this->optionGroupIds[sname]]->isSet;
       }
       return 0;
     };
@@ -683,19 +949,19 @@ namespace ez
             letter = "-" + letter;
             if( optionGroupIds.count( letter ) ) {
               Id = optionGroupIds[letter];
-              groups[Id].isSet = 1;
-              if( groups[Id].expectArgs ) {
+              groups[Id]->isSet = 1;
+              if( groups[Id]->expectArgs ) {
                 ++i;
                 if( i >= ( int )args.size() ) {
                   break;
                 }
                 std::vector<std::string> argOptions;
-                if(groups[Id].needSplit)
+                if(groups[Id]->needSplit)
                   SplitDelim( args[i], delim, argOptions );
                 else {
                   argOptions.push_back(args[i]);
                 }
-                groups[Id].args.push_back( argOptions );
+                groups[Id]->args.push_back( argOptions );
               }
             } else if( std::find( unknownOptions.begin(), \
                                   unknownOptions.end(), \
@@ -707,15 +973,15 @@ namespace ez
           /*long name single option*/
           if( optionGroupIds.count( s ) ) {
             Id = optionGroupIds[s];
-            groups[Id].isSet = 1;
-            if( groups[Id].expectArgs ) {
+            groups[Id]->isSet = 1;
+            if( groups[Id]->expectArgs ) {
               ++i;
               if( i >= ( int )args.size() ) {
                 break;
               }
               std::vector<std::string> argOptions;
               SplitDelim( args[i], delim, argOptions );
-              groups[Id].args.push_back( argOptions );
+              groups[Id]->args.push_back( argOptions );
             }
           } else if( std::find( unknownOptions.begin(), \
                                 unknownOptions.end(), \
@@ -728,10 +994,10 @@ namespace ez
             s = unlabeledPos[unlabel];
             if( optionGroupIds.count( s ) ) {
               Id = optionGroupIds[s];
-              groups[Id].isSet = 1;
+              groups[Id]->isSet = 1;
               std::vector<std::string> argOptions;
               SplitDelim( args[i], delim, argOptions );
-              groups[Id].args.push_back( argOptions );
+              groups[Id]->args.push_back( argOptions );
             }
             unlabel++;
           } else if( std::find( unknownOptions.begin(), \
@@ -765,27 +1031,27 @@ namespace ez
       bool isValid = true;
       /*check required*/
       for( i = 0; i < ( int )groups.size(); ++i ) {
-        if( groups[i].isRequired && !groups[i].isSet ) {
+        if( groups[i]->isRequired && !groups[i]->isSet ) {
           out.append( "ERROR: Argument " )\
-          .append( groups[i].flags[0] ).append( " must be set.\n" );
+          .append( groups[i]->flags[0] ).append( " must be set.\n" );
           isValid = false;
         }
       }
       /*check expectArgs*/
       for( i = 0; i < ( int )groups.size(); ++i ) {
-        OptionGroup g = groups[i];
-        if( g.isSet ) {
-          if( g.expectArgs != 0 && g.args.empty() ) {
+        OptionGroup *g = groups[i];
+        if( g->isSet ) {
+          if( g->expectArgs != 0 && g->args.empty() ) {
             out.append( "ERROR: Got unexpected number of arguments for option " ) \
-            .append( g.flags[0] ).append( ".\n" );
+            .append( g->flags[0] ).append( ".\n" );
             isValid = false;
             continue;
           }
-          for( j = 0; j < ( int )g.args.size(); ++j ) {
-            if( ( g.expectArgs != -1 && g.expectArgs != ( int )g.args[j].size() )
-                || ( g.expectArgs == -1 && g.args[j].size() == 0 ) ) {
+          for( j = 0; j < ( int )g->args.size(); ++j ) {
+            if( ( g->expectArgs != -1 && g->expectArgs != ( int )g->args[j].size() )
+                || ( g->expectArgs == -1 && g->args[j].size() == 0 ) ) {
               out.append( "ERROR: Got unexpected number of arguments for option " ) \
-              .append( g.flags[0] ).append( ".\n" );
+              .append( g->flags[0] ).append( ".\n" );
               isValid = false;
             }
           }
@@ -794,11 +1060,11 @@ namespace ez
       /*check arguments validation*/
       std::vector<std::string> tempOptions;
       for( i = 0; i < ( int )groups.size(); ++i ) {
-        if( !groups[i].validate( tempOptions ) ) {
+        if( !groups[i]->validate( tempOptions ) ) {
           for( j = 0; j < ( int )tempOptions.size(); ++j ) {
             out.append( "ERROR: Got invalid argument \"" ) \
             .append( tempOptions[j] ).append( "\" for option " ) \
-            .append( groups[i].flags[0] ).append( ".\n" );
+            .append( groups[i]->flags[0] ).append( ".\n" );
             isValid = false;
           }
         }
@@ -811,9 +1077,9 @@ namespace ez
         std::string xorstr;
         int xorNum = 0;
         for( i = 0; i < ( int )xorIDs.size(); i++ ) {
-          if( groups[xorIDs[i]].isSet ) {
+          if( groups[xorIDs[i]]->isSet ) {
             xorstr.append( " \"" ) \
-            .append( groups[xorIDs[i]].flags[0] ).append( "\" " );
+            .append( groups[xorIDs[i]]->flags[0] ).append( "\" " );
             xorNum++;
           }
         }
@@ -857,7 +1123,7 @@ namespace ez
     /*members*/
     /** @brief 参数标签哈希 key=>参数 value=>id   */
     std::map< std::string, int > optionGroupIds;
-    std::vector<OptionGroup> groups;  /** @brief 参数组  */
+    std::vector<OptionGroup *> groups; /** @brief 参数组  */
     /** @brief 互斥参数组哈希,key=>groupID,value=>参数ID列表  */
     std::map<int, std::vector<int> > xorGroups;
     std::vector<std::string> unknownOptions;  /** @brief 无标签参数组  */

@@ -33,9 +33,9 @@ int main(int argc, const char** argv)
 	//添加float参数，要求输入两个
 	opt.add("--float", false, 2, u8"宽度,高度", EZ_FLOAT, "33.5,44.2");
 	//添加double参数,限制输入范围,添加默认参数
-	opt.add("-d,--double", false, 4, "Longitude ranges", ez::EZ_DOUBLE, "", "-180.0", "180.0");
+	opt.add("-d,--double", false, 4, "Longitude ranges", ez::EZ_DOUBLE, "1,2,3,4", "-180.0", "180.0");
 	//添加text
-	opt.add("-t,--type", false, 2, "Input Image Type", ez::EZ_TEXT, "fy3a", "", "", "modis,fy3a,zy,landsat");
+	opt.add("-t,--type", false, 1, "Input Image Type", ez::EZ_TEXT, "fy3a", "", "", "modis,fy3a,zy,landsat");
 
 	//无前导符的参数,输入文件,必须存在,将会放在所有参数后面
 	opt.add("input", true, 1, "Input File.", ez::EZ_FILE);
