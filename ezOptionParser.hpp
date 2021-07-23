@@ -1025,7 +1025,7 @@ namespace ez
     * @param out 输出提示信息
     * @return 输入参数格式是否正确
     */
-    inline bool checkValid( std::string &out )
+    inline virtual bool checkValid( std::string &out )
     {
       int i, j;
       bool isValid = true;
