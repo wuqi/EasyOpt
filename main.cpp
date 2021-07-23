@@ -4,7 +4,7 @@
 
 int main(int argc, const char** argv)
 {
-	ArgumentParser opt;
+	ArgumentParser opt(argc,argv);
 	//概要说明
 	opt.overview = "sbi:Make the Soil brightness index product.";
 	//语法,不做说明则将自动生成
@@ -48,7 +48,7 @@ int main(int argc, const char** argv)
 	//opt.xorAdd("-b,-f");
 
 	//带参数传入,则使用CLI解析
-	if (argc > 1 && !opt.parse(argc, argv))
+	if (argc > 1 && !opt.parse())
 	{
 		return -1;
 	}
@@ -56,10 +56,36 @@ int main(int argc, const char** argv)
 	{
 	//不带参数传入,则弹出GUI解析
 		opt.run();
-		if (!opt.parse(argc, argv))
+		if (!opt.parse())
 			return -1;
 	}
 	//get args
+	short batchtime;
+	opt.get("-s")->get(batchtime);
+
+	bool bMerge = opt.get("-m")->isSet;
+
+	unsigned int nID;
+	opt.get("--int")->get(nID);
+
+	std::vector< float > vWH;
+	opt.get("--float")->getVector(vWH);
+
+	std::vector<double> vLong;
+	opt.get("--double")->getVector(vLong);
+
+	std::string type;
+	opt.get("-t")->get(type);
+
+	std::string inputType;
+	opt.get("input")->get(inputType);
+
+	std::string outputfile;
+	opt.get("-o")->get(outputfile);
+
+	std::string folder;
+	opt.get("-D")->get(folder);
+
 
 	//processing
 	try {
@@ -70,6 +96,5 @@ int main(int argc, const char** argv)
 
 	}
 
-	getchar();
 	return 0;
 }

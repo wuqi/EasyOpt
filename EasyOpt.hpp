@@ -1,5 +1,7 @@
 #include "ezOptionParser.hpp"
-#define MAHI_GUI_NO_CONSOLE
+#if defined(_WIN32)
+#include "windows.h"
+#endif
 #include <Mahi/Gui.hpp>
 #include <Mahi/Util.hpp>
 
@@ -10,8 +12,15 @@ using namespace  ez;
 class ArgumentParser : public OptionParser, public Application
 {
 public:
-  ArgumentParser() : OptionParser()
+  ArgumentParser(int c, const char **v) : OptionParser()
   {
+    argc = c;
+    argv = v;
+    if (argc == 1) {
+#if defined(_WIN32)
+      ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+#endif
+    }
     std::string fontFile = "fonts/custom.ttf";
     std::string icoFile = "fonts/ico.ttf";
     if (CheckFileExistence(fontFile)) {
@@ -139,14 +148,15 @@ public:
           if (ImGui::BeginCombo(label.c_str(), vecValid[item_current_idx].c_str(), flags)) {
             for (size_t n = 0; n < vecValid.size(); n++) {
               const bool is_selected = (item_current_idx == n);
-              if (ImGui::Selectable(vecValid[n].c_str(), is_selected))
+              if (ImGui::Selectable(vecValid[n].c_str(), is_selected)) {
                 item_current_idx = n;
-              if (is_selected) {
-                ImGui::SetItemDefaultFocus();
                 og->args.resize(1);
                 og->args[0].resize(1);
                 og->args[0][0] = vecValid[n];
                 og->isSet = true;
+              }
+              if (is_selected) {
+                ImGui::SetItemDefaultFocus();
               }
             }
             ImGui::EndCombo();
@@ -177,14 +187,15 @@ public:
           if (ImGui::BeginCombo(label.c_str(), vecValid[item_current_idx].c_str(), flags)) {
             for (size_t n = 0; n < vecValid.size(); n++) {
               const bool is_selected = (item_current_idx == n);
-              if (ImGui::Selectable(vecValid[n].c_str(), is_selected))
+              if (ImGui::Selectable(vecValid[n].c_str(), is_selected)) {
                 item_current_idx = n;
-              if (is_selected) {
-                ImGui::SetItemDefaultFocus();
                 og->args.resize(1);
                 og->args[0].resize(1);
                 og->args[0][0] = vecValid[n];
                 og->isSet = true;
+              }
+              if (is_selected) {
+                ImGui::SetItemDefaultFocus();
               }
             }
             ImGui::EndCombo();
@@ -279,7 +290,7 @@ public:
       quit();
   }
 
-  inline virtual bool parse(int argc, const char *const *argv)
+  inline virtual bool parse()
   {
     if (argc > 1) {
       return OptionParser::parse(argc, argv);
@@ -289,4 +300,6 @@ public:
 protected:
   bool ok = false;
   bool open = true;
+  int argc;
+  const char **argv;
 };
