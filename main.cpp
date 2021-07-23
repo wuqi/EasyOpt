@@ -45,8 +45,9 @@ int main(int argc, const char **argv)
   //互斥参数设置：使用逗号隔开一串第一个flag设置，互斥参数必须为可选，否则将出现逻辑问题
   //opt.xorAdd("-b,-f");
   //带参数传入,则使用CLI解析
-  if (argc > 1 && !opt.parse()) {
-    return -1;
+  if (argc > 1 ) {
+	if(!opt.parse())
+      return -1;
   } else {
     //不带参数传入,则弹出GUI解析
     opt.run();
