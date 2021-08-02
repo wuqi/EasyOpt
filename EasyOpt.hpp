@@ -220,6 +220,7 @@ public:
       case EZ_FILE: {
         //file
         ImGui::Text(og->help.c_str());
+		ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionMax().x - 40.0f);
         ImGui::InputText(label.c_str(), &og->defaults, ImGuiInputTextFlags_ReadOnly);
         ImGui::SameLine();
         std::string iconLabel = ICON_FA_FILE + label;
@@ -236,6 +237,7 @@ public:
       case EZ_DIR: {
         //dir
         ImGui::Text(og->help.c_str());
+		ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionMax().x - 40.0f);
         ImGui::InputText(label.c_str(), &og->defaults, ImGuiInputTextFlags_ReadOnly);
         ImGui::SameLine();
         std::string iconLabel = ICON_FA_FOLDER_OPEN + label;
@@ -252,6 +254,7 @@ public:
       case EZ_OUTPUT: {
         //save
         ImGui::Text(og->help.c_str());
+		ImGui::SetNextItemWidth(ImGui::GetWindowContentRegionMax().x - 40.0f);
         ImGui::InputText(label.c_str(), &og->defaults, ImGuiInputTextFlags_ReadOnly);
         ImGui::SameLine();
         std::string iconLabel = ICON_FA_SAVE + label;
@@ -277,6 +280,7 @@ public:
       this->errors = "";
       if (!checkValid(this->errors)) {
         valid = false;
+		openerr = true;
       } else {
         valid = true;
         ok = true;
@@ -287,9 +291,12 @@ public:
     if (ImGui::Button("Cancel", ImVec2(xpos - 2, 30))) {
       quit();
     }
-    if(!valid) {
+    if(!valid && openerr) {
+	  ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_Once);
+	  ImGui::Begin("Error", &openerr);
       ImGui::SetNextItemWidth(-1.0f);
       ImGui::InputTextMultiline("##errorInfo", &this->errors);
+	  ImGui::End();
     }
     ImGui::End();
     if (!open)
@@ -411,6 +418,7 @@ public:
 protected:
   bool ok = false;
   bool open = true;
+  bool openerr = false;
   int argc;
   const char **argv;
 };
